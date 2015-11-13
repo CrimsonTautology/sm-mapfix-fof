@@ -112,13 +112,6 @@ public OnMapStart()
 
     SetupTeleports();
 
-    AddFileToDownloadsTable("custom/hl2weapons/scripts/weapon_357.txt");
-    AddFileToDownloadsTable("custom/hl2weapons/scripts/weapon_crossbow.txt");
-    AddFileToDownloadsTable("custom/hl2weapons/scripts/weapon_crowbar.txt");
-    AddFileToDownloadsTable("custom/hl2weapons/scripts/weapon_physcannon.txt");
-    AddFileToDownloadsTable("custom/hl2weapons/scripts/weapon_rpg.txt");
-    AddFileToDownloadsTable("custom/hl2weapons/scripts/weapon_smg1.txt");
-
     PrecacheSound("weapons/gatling/gattling_fire1.wav", true );
     PrecacheSound("weapons/gatling/gattling_fire2.wav", true );
 }
