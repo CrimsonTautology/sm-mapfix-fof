@@ -68,8 +68,16 @@ public OnEntityCreated(entity, const char[] classname)
 #endif
     if(StrEqual(classname, "fof_teamplay"))
     {
-        PrintToServer("Block spawn");
+        PrintToServer("Fix fof_teamplay spawn");
         ServerCommand("fof_sv_currentmode 2");
+    }else if(StrEqual(classname, "fof_breakbad"))
+    {
+        PrintToServer("Fix fof_breakbad spawn");
+        ServerCommand("fof_sv_currentmode 3");
+    }else if(StrEqual(classname, "fof_elimination"))
+    {
+        PrintToServer("Fix fof_elimination spawn");
+        ServerCommand("fof_sv_currentmode 4");
     }
 }
 
