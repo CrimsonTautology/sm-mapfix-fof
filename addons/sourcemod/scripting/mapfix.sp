@@ -16,8 +16,8 @@
 #include <sdktools>
 #include <sdkhooks>
 
-#define PLUGIN_VERSION "1.0.0"
-#define PLUGIN_NAME "[FoF] [HACK] mapfix"
+#define PLUGIN_VERSION "1.1.0"
+#define PLUGIN_NAME "[FoF] [HACK] [BADCODES] mapfix"
 
 //#define DEBUG				true
 
@@ -35,7 +35,7 @@ new Handle:g_CachedTargetTrie = INVALID_HANDLE;
 
 public OnPluginStart()
 {
-    CreateConVar("dmr_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_PLUGIN | FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
+    CreateConVar("fof_mapfix_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_PLUGIN | FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 
     HookEvent("round_start", Event_RoundStart);
 
