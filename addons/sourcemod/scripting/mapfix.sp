@@ -39,7 +39,7 @@ public OnPluginStart()
 
     HookEvent("round_start", Event_RoundStart);
 
-    RegAdminCmd("sm_teleport", Command_Test, ADMFLAG_VOTE, "[ADMIN] test");
+    //RegAdminCmd("sm_test", Command_Test, ADMFLAG_VOTE, "[ADMIN] test");
     SetupTeleports();
 
 }
