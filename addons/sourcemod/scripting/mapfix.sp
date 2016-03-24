@@ -39,33 +39,14 @@ public OnPluginStart()
 
     HookEvent("round_start", Event_RoundStart);
 
-    //RegAdminCmd("sm_test", Command_Test, ADMFLAG_VOTE, "[ADMIN] test");
     SetupTeleports();
-
 }
 
-public Action:Command_Test(client, args)
-{
-#if defined DEBUG
-    PrintToServer("test3");
-#endif
-      
-
-    return Plugin_Handled;
-}
-
-public OnAutoConfigsBuffered()
-{
-#if defined DEBUG
-    PrintToServer("Hit OnAutoConfigsBuffered");
-#endif
-}
 
 public OnEntityCreated(entity, const char[] classname)
 {
-#if defined DEBUG
-    //PrintToServer("Hit OnEntityCreated (%d) -> %s", entity, classname);
-#endif
+    //Check for the creating of game mode entities and switch fof_sv_currentmode to the correct gamemode
+    //This will let you play multiple gamemodes on the same server.
     if(StrEqual(classname, "fof_teamplay"))
     {
         PrintToServer("Fix fof_teamplay spawn");
@@ -81,46 +62,16 @@ public OnEntityCreated(entity, const char[] classname)
     }
 }
 
-public OnEntityDestroyed(entity)
-{
-#if defined DEBUG
-    //PrintToServer("Hit OnEntityDestroyed (%d)", entity);
-#endif
-}
-
-public Action:OnGetGameDescription(char gameDesc[64])
-{
-#if defined DEBUG
-    PrintToServer("Hit OnGetGameDescription -> %s", gameDesc);
-#endif
-    return Plugin_Continue;
-}
-
-public Action:OnLevelInit(const char[] mapName, char mapEntities[2097152])
-{
-#if defined DEBUG
-    PrintToServer("Hit OnLevelInit -> %s", mapName);
-#endif
-    return Plugin_Continue;
-}
-
 public OnMapStart()
 {
-#if defined DEBUG
-    PrintToServer("Hit OnMapStart");
-#endif
-
     SetupTeleports();
 
+    //I use this for my plugins that use the custom gatling gun weapon_smg1 entity
     PrecacheSound("weapons/gatling/gattling_fire1.wav", true );
     PrecacheSound("weapons/gatling/gattling_fire2.wav", true );
 }
 public Event_RoundStart(Event:event, const String:name[], bool:dontBroadcast)
 {
-#if defined DEBUG
-    PrintToServer("Hit round_start");
-#endif
-
     SetupTeleports();
 }
 
@@ -138,9 +89,6 @@ public SetupTeleports()
         GetEntPropString(ent, Prop_Data, "m_iName", target, sizeof(target));
         SetTrieValue(g_CachedTargetTrie, target, ent);
 
-#if defined DEBUG
-        PrintToServer("info_teleport_destination(%d) -> %s", ent, target);
-#endif
     }
 
     //Add an ontouch event for every trigger_teleport
@@ -148,12 +96,7 @@ public SetupTeleports()
     while( (ent = FindEntityByClassname(ent, "trigger_teleport")) != INVALID_ENT_REFERENCE)
     {
         SDKHook(ent, SDKHook_StartTouchPost, TriggerTeleportStartTouch);
-
         GetEntPropString(ent, Prop_Data, "m_target", target, sizeof(target));
-#if defined DEBUG
-        PrintToServer("trigger_teleport(%d) -> %s", ent, target);
-#endif
-        //DispatchKeyValue(ent, "classname", "man_butt");
     }
 
 }
@@ -176,10 +119,6 @@ public Action:TriggerTeleportStartTouch(trigger_teleport, client)
     WritePackCell(data, GetClientUserId(client));
     WritePackCell(data, info_teleport_destination);
 
-#if defined DEBUG
-    PrintToServer("teleport %d to %s (%d)", client, targetname, info_teleport_destination);
-#endif
-
     return Plugin_Continue;
 }
 
@@ -198,7 +137,4 @@ public Action:DelayTeleport(Handle:Timer, Handle:data)
 
     SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos);
     SetEntPropVector(client, Prop_Data, "m_angAbsRotation", ang);
-#if defined DEBUG
-    PrintToServer("hit DelayTeleport (%d) %f %f %f", client, pos[0], pos[1], pos[2]);
-#endif
 }
