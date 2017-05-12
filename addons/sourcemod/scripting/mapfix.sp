@@ -15,8 +15,9 @@
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
+#include <smlib>
 
-#define PLUGIN_VERSION "1.1.0"
+#define PLUGIN_VERSION "1.1.1"
 #define PLUGIN_NAME "[FoF] [HACK] [BADCODES] mapfix"
 
 //#define DEBUG				true
