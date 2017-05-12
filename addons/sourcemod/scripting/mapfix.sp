@@ -114,28 +114,16 @@ public RemoveSlots12()
 
 public AddSlots12()
 {
-    new start = Entity_FindByName("", "func_brush");
-    new ent = Entity_FindByClassName(start, "func_brush");
-
-    if (ent != INVALID_ENT_REFERENCE)
-    {
-        PrintToServer("[MapFix] add slots_12");
-        Entity_SetName(ent, "slots_12");
-    }
-
+    new ent = Entity_Create("func_brush");
+    Entity_SetName(ent, "slots_12");
+    PrintToServer("[MapFix] add slots_12");
 }
 
 public AddSlots32()
 {
-    new start = Entity_FindByName("", "func_brush");
-    new ent = Entity_FindByClassName(start, "func_brush");
-
-    if (ent != INVALID_ENT_REFERENCE)
-    {
-        PrintToServer("[MapFix] add slots_32");
-        Entity_SetName(ent, "slots_32");
-    }
-
+    new ent = Entity_Create("func_brush");
+    Entity_SetName(ent, "slots_32");
+    PrintToServer("[MapFix] add slots_32");
 }
 
 public SetupTeleports()
