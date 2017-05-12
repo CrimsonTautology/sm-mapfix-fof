@@ -50,21 +50,23 @@ public OnEntityCreated(entity, const char[] classname)
     //This will let you play multiple gamemodes on the same server.
     if(StrEqual(classname, "fof_teamplay"))
     {
-        PrintToServer("Fix fof_teamplay spawn");
+        PrintToServer("[MapFix] change mode for fof_teamplay spawn");
         ServerCommand("fof_sv_currentmode 2");
     }else if(StrEqual(classname, "fof_breakbad"))
     {
-        PrintToServer("Fix fof_breakbad spawn");
+        PrintToServer("[MapFix] change mode for fof_breakbad spawn");
         ServerCommand("fof_sv_currentmode 3");
     }else if(StrEqual(classname, "fof_elimination"))
     {
-        PrintToServer("Fix fof_elimination spawn");
+        PrintToServer("[MapFix] change mode for fof_elimination spawn");
         ServerCommand("fof_sv_currentmode 4");
     }
+
 }
 
 public OnMapStart()
 {
+    FixSlotLimits();
     SetupTeleports();
 
     //I use this for my plugins that use the custom gatling gun weapon_smg1 entity
@@ -74,6 +76,66 @@ public OnMapStart()
 public Event_RoundStart(Event:event, const String:name[], bool:dontBroadcast)
 {
     SetupTeleports();
+}
+
+public FixSlotLimits()
+{
+    //Normally you can only run 12 slot maps with < 16 players And 32 slot maps
+    //with > 20 players This is checked with a "func_brush" entity with a
+    //"targetname" of "slots_12" and "slots_32".  This function finds these
+    //entities and renames them or names an entity so that the map can be
+    //played regardless.  MaxClients holds the maxplayers server variable.
+
+    if (MaxClients < 16)
+    {
+        AddSlots12();
+    } else if (MaxClients >= 16 && MaxClients <= 20)
+    {
+        RemoveSlots12();
+    } else if (MaxClients > 20)
+    {
+        RemoveSlots12();
+        AddSlots32();
+    }
+}
+
+public RemoveSlots12()
+{
+    new ent = Entity_FindByName("slots_12", "func_brush");
+
+    if (ent != INVALID_ENT_REFERENCE)
+    {
+        //slots_12 found
+        PrintToServer("[MapFix] remove slots_12");
+        Entity_SetName(ent, "blanked");
+    }
+
+}
+
+public AddSlots12()
+{
+    new start = Entity_FindByName("", "func_brush");
+    new ent = Entity_FindByClassName(start, "func_brush");
+
+    if (ent != INVALID_ENT_REFERENCE)
+    {
+        PrintToServer("[MapFix] add slots_12");
+        Entity_SetName(ent, "slots_12");
+    }
+
+}
+
+public AddSlots32()
+{
+    new start = Entity_FindByName("", "func_brush");
+    new ent = Entity_FindByClassName(start, "func_brush");
+
+    if (ent != INVALID_ENT_REFERENCE)
+    {
+        PrintToServer("[MapFix] add slots_32");
+        Entity_SetName(ent, "slots_32");
+    }
+
 }
 
 public SetupTeleports()
