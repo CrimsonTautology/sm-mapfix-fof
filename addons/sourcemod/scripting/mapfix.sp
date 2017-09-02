@@ -68,6 +68,7 @@ public OnMapStart()
 {
     FixSlotLimits();
     SetupTeleports();
+    FixCvarBounds();
 
     //I use this for my plugins that use the custom gatling gun weapon_smg1 entity
     PrecacheSound("weapons/gatling/gattling_fire1.wav", true );
@@ -76,6 +77,41 @@ public OnMapStart()
 public Event_RoundStart(Event:event, const String:name[], bool:dontBroadcast)
 {
     SetupTeleports();
+}
+
+public FixCvarBounds()
+{
+    //Some cvars are blocked from being changed in game;  this will remove
+    //those bounds so they can be modified like in any other game.
+
+    new Handle:cvar;
+    new String:cvars[][] = {
+        "fof_sv_ghost_town",
+        "fof_sv_maxteams",
+        "fof_sv_pickup_maxweight",
+        "fof_sv_recoilamount",
+        "fof_sv_speedpenalty",
+        "fof_sv_teambalance_allowed",
+        "fof_sv_viewspring",
+        "fof_sv_wcrate_regentime",
+        "sv_gravity",
+    };
+
+    for(new i=0; i < sizeof(cvars); i++)
+    {
+        cvar = FindConVar(cvars[i]);
+
+        if (cvar != INVALID_HANDLE)
+        {
+            SetConVarBounds(cvar, ConVarBound_Upper, false);
+            SetConVarBounds(cvar, ConVarBound_Lower, false);
+            PrintToServer("[MapFix] remove bounds on \"%s\"", cvars[i]);
+            CloseHandle(cvar);
+
+        } else {
+            PrintToServer("[MapFix] Warning: could not find cvar \"%s\"", cvars[i]);
+        }
+    }
 }
 
 public FixSlotLimits()
