@@ -112,6 +112,19 @@ public FixCvarBounds()
             PrintToServer("[MapFix] Warning: could not find cvar \"%s\"", cvars[i]);
         }
     }
+
+    //Block cvars from changing
+
+    //Block class system
+    cvar = FindConVar("fof_sv_tp_classes");
+    SetConVarBounds(cvar, ConVarBound_Upper, true, 0.0);
+    SetConVarBounds(cvar, ConVarBound_Lower, true, 0.0);
+
+    //Block forced autobalance
+    cvar = FindConVar("fof_sv_teambalance_allowed");
+    SetConVarBounds(cvar, ConVarBound_Upper, true, 0.0);
+    SetConVarBounds(cvar, ConVarBound_Lower, true, 0.0);
+
 }
 
 public FixSlotLimits()
