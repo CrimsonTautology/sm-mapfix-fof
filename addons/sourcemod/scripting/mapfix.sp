@@ -17,7 +17,7 @@
 #include <sdkhooks>
 #include <smlib>
 
-#define PLUGIN_VERSION "1.1.2"
+#define PLUGIN_VERSION "1.1.3"
 #define PLUGIN_NAME "[FoF] [HACK] [BADCODES] mapfix"
 
 //#define DEBUG				true
@@ -33,12 +33,17 @@ public Plugin:myinfo =
 
 
 new Handle:g_CachedTargetTrie = INVALID_HANDLE;
+new Handle:g_Cvar_Timelimit = INVALID_HANDLE;
+new bool:g_AutoFlipTimelimit = true;
 
 public OnPluginStart()
 {
     CreateConVar("fof_mapfix_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 
     HookEvent("round_start", Event_RoundStart);
+
+    g_Cvar_Timelimit = FindConVar("mp_timelimit");
+    HookConVarChange(g_Cvar_Timelimit, OnTimelimitChanged);
 
     SetupTeleports();
 }
@@ -73,10 +78,30 @@ public OnMapStart()
     //I use this for my plugins that use the custom gatling gun weapon_smg1 entity
     PrecacheSound("weapons/gatling/gattling_fire1.wav", true );
     PrecacheSound("weapons/gatling/gattling_fire2.wav", true );
+
+    // reset mp_timelimit autoflip checker
+    g_AutoFlipTimelimit = true;
 }
+
 public Event_RoundStart(Event:event, const String:name[], bool:dontBroadcast)
 {
     SetupTeleports();
+}
+
+public OnTimelimitChanged(Handle:convar, const String:oldValue[], const String:newValue[])
+{
+    // If in Team Shootout FoF no longer lets you have a mp_timelimit greater
+    // than 20;  this will attempt to fix that.
+
+    // skip if we already did the autoflip
+    if (!g_AutoFlipTimelimit) return;
+
+    if (StrEqual(newValue, "20")) {
+        PrintToServer("[MapFix] prevent auto change to mp_timelimit; reset to \"%s\"", oldValue);
+        SetConVarString(convar, oldValue);
+        g_AutoFlipTimelimit = false;
+    }
+
 }
 
 public FixCvarBounds()
@@ -87,14 +112,11 @@ public FixCvarBounds()
     new Handle:cvar;
     new String:cvars[][] = {
         "fof_sv_ghost_town",
-        "fof_sv_maxteams",
         "fof_sv_pickup_maxweight",
-        "fof_sv_recoilamount",
-        "fof_sv_speedpenalty",
         "fof_sv_teambalance_allowed",
-        "fof_sv_viewspring",
         "fof_sv_wcrate_regentime",
         "sv_gravity",
+        "mp_timelimit",
     };
 
     for(new i=0; i < sizeof(cvars); i++)
