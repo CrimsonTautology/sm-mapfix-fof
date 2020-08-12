@@ -34,7 +34,10 @@ public Plugin:myinfo =
 
 new Handle:g_CachedTargetTrie = INVALID_HANDLE;
 new Handle:g_Cvar_Timelimit = INVALID_HANDLE;
+new Handle:g_Cvar_BotSlotpct = INVALID_HANDLE;
+
 new bool:g_AutoFlipTimelimit = true;
+new bool:g_AutoFlipBotSlotpct = true;
 
 public OnPluginStart()
 {
@@ -44,6 +47,9 @@ public OnPluginStart()
 
     g_Cvar_Timelimit = FindConVar("mp_timelimit");
     HookConVarChange(g_Cvar_Timelimit, OnTimelimitChanged);
+
+    g_Cvar_BotSlotpct = FindConVar("fof_sv_bot_slotpct");
+    HookConVarChange(g_Cvar_BotSlotpct, OnBotSlotpctChanged);
 
     SetupTeleports();
 }
@@ -79,8 +85,9 @@ public OnMapStart()
     PrecacheSound("weapons/gatling/gattling_fire1.wav", true );
     PrecacheSound("weapons/gatling/gattling_fire2.wav", true );
 
-    // reset mp_timelimit autoflip checker
+    // reset mp_timelimit and fof_sv_bot_slotpct autoflip checker
     g_AutoFlipTimelimit = true;
+    g_AutoFlipBotSlotpct = true;
 }
 
 public Event_RoundStart(Event:event, const String:name[], bool:dontBroadcast)
@@ -100,6 +107,21 @@ public OnTimelimitChanged(Handle:convar, const String:oldValue[], const String:n
         PrintToServer("[MapFix] prevent auto change to mp_timelimit; reset to \"%s\"", oldValue);
         SetConVarString(convar, oldValue);
         g_AutoFlipTimelimit = false;
+    }
+
+}
+
+public OnBotSlotpctChanged(Handle:convar, const String:oldValue[], const String:newValue[])
+{
+    // prevent bots from being turned on
+
+    // skip if we already did the autoflip
+    if (!g_AutoFlipBotSlotpct) return;
+
+    if (StrEqual(newValue, "0.300000")) {
+        PrintToServer("[MapFix] prevent auto change to fof_sv_bot_slotpct; reset to \"%s\"", oldValue);
+        SetConVarString(convar, oldValue);
+        g_AutoFlipBotSlotpct = false;
     }
 
 }
