@@ -236,7 +236,6 @@ public SetupTeleports()
     }
 
     //Add an ontouch event for every trigger_teleport
-    decl Float:pos1[3], Float:pos2[3];
     while( (ent = FindEntityByClassname(ent, "trigger_teleport")) != INVALID_ENT_REFERENCE)
     {
         SDKHook(ent, SDKHook_StartTouchPost, TriggerTeleportStartTouch);
